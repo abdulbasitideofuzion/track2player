@@ -3,17 +3,19 @@ require "json"
 package = JSON.parse(File.read(File.join(__dir__, "package.json")))
 
 Pod::Spec.new do |s|
-  s.name         = "track2player"
-  s.version      = package["version"]
-  s.summary      = package["description"]
-  s.homepage     = package["homepage"]
-  s.license      = package["license"]
-  s.authors      = package["author"]
+  s.name = package["name"]
+  s.version = package["version"]
+  s.license = package["license"]
 
-  s.platforms    = { :ios => "10.0" }
-  s.source       = { :git => "https://github.com/abdulbasitideofuzion/track2player.git.git", :tag => "#{s.version}" }
+  s.author = "abdul Basit"
+  s.homepage = package["repository"]["url"]
+  s.platform = :ios, "10.0"
 
-  s.source_files = "ios/**/*.{h,m,mm}"
+  s.source = { :git => package["repository"]["url"], :tag => "v#{s.version}" }
+  s.source_files = "ios/**/*.{h,m,swift}"
+
+  s.swift_version = "4.2"
 
   s.dependency "React-Core"
+  s.dependency "SwiftAudioEx", "0.13.2"
 end

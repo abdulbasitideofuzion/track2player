@@ -20,10 +20,9 @@
     "*.podspec"
   ],
   "keywords": [
+    "react",
     "react-native",
     "track-player",
-    "ios",
-    "android",
     "audio-player",
     "audio",
     "player",
