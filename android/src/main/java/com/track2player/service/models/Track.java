@@ -4,8 +4,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.media.MediaDescriptionCompat;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.RatingCompat;
 import android.support.v4.media.session.MediaSessionCompat.QueueItem;
-
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
@@ -19,183 +20,186 @@ import com.google.android.exoplayer2.util.Util;
 import com.track2player.service.Utils;
 import com.track2player.service.player.LocalPlayback;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static android.support.v4.media.MediaMetadataCompat.Builder;
+import static android.media.MediaMetadata.METADATA_KEY_MEDIA_URI;
+import static android.support.v4.media.MediaMetadataCompat.*;
+import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_URI;
 
 /**
  * @author Guichaguri
  */
-public class Track extends TrackMetadata {
+public class Track extends com.guichaguri.trackplayer.service.models.TrackMetadata {
 
-    public static List<Track> createTracks(Context context, List objects, int ratingType) {
-        List<Track> tracks = new ArrayList<>();
+  public static List<Track> createTracks(Context context, List objects, int ratingType) {
+    List<Track> tracks = new ArrayList<>();
 
-        for(Object o : objects) {
-            if(o instanceof Bundle) {
-                tracks.add(new Track(context, (Bundle)o, ratingType));
-            } else {
-                return null;
-            }
-        }
-
-        return tracks;
+    for(Object o : objects) {
+      if(o instanceof Bundle) {
+        tracks.add(new Track(context, (Bundle)o, ratingType));
+      } else {
+        return null;
+      }
     }
 
-    public Uri uri;
-    public int resourceId;
+    return tracks;
+  }
 
-    public TrackType type = TrackType.DEFAULT;
+  public Uri uri;
+  public int resourceId;
 
-    public String contentType;
-    public String userAgent;
+  public TrackType type = TrackType.DEFAULT;
 
-    public Bundle originalItem;
+  public String contentType;
+  public String userAgent;
 
-    public Map<String, String> headers;
+  public Bundle originalItem;
 
-    public final long queueId;
+  public Map<String, String> headers;
 
-    public Track(Context context, Bundle bundle, int ratingType) {
-        resourceId = Utils.getRawResourceId(context, bundle, "url");
+  public final long queueId;
 
-        if(resourceId == 0) {
-            uri = Utils.getUri(context, bundle, "url");
-        } else {
-            uri = RawResourceDataSource.buildRawResourceUri(resourceId);
-        }
+  public Track(Context context, Bundle bundle, int ratingType) {
+    resourceId = Utils.getRawResourceId(context, bundle, "url");
 
-        String trackType = bundle.getString("type", "default");
-
-        for(TrackType t : TrackType.values()) {
-            if(t.name.equalsIgnoreCase(trackType)) {
-                type = t;
-                break;
-            }
-        }
-
-        contentType = bundle.getString("contentType");
-        userAgent = bundle.getString("userAgent");
-
-        Bundle httpHeaders = bundle.getBundle("headers");
-        if(httpHeaders != null) {
-            headers = new HashMap<>();
-            for(String header : httpHeaders.keySet()) {
-                headers.put(header, httpHeaders.getString(header));
-            }
-        }
-
-        setMetadata(context, bundle, ratingType);
-
-        queueId = System.currentTimeMillis();
-        originalItem = bundle;
+    if(resourceId == 0) {
+      uri = Utils.getUri(context, bundle, "url");
+    } else {
+      uri = RawResourceDataSource.buildRawResourceUri(resourceId);
     }
 
-    @Override
-    public void setMetadata(Context context, Bundle bundle, int ratingType) {
-        super.setMetadata(context, bundle, ratingType);
+    String trackType = bundle.getString("type", "default");
 
-        if (originalItem != null && originalItem != bundle)
-            originalItem.putAll(bundle);
+    for(TrackType t : TrackType.values()) {
+      if(t.name.equalsIgnoreCase(trackType)) {
+        type = t;
+        break;
+      }
     }
 
-    @Override
-    public Builder toMediaMetadata() {
-        Builder builder = super.toMediaMetadata();
+    contentType = bundle.getString("contentType");
+    userAgent = bundle.getString("userAgent");
 
-        builder.putString(METADATA_KEY_MEDIA_URI, uri.toString());
-
-        return builder;
+    Bundle httpHeaders = bundle.getBundle("headers");
+    if(httpHeaders != null) {
+      headers = new HashMap<>();
+      for(String header : httpHeaders.keySet()) {
+        headers.put(header, httpHeaders.getString(header));
+      }
     }
 
-    public QueueItem toQueueItem() {
-        MediaDescriptionCompat descr = new MediaDescriptionCompat.Builder()
-                .setTitle(title)
-                .setSubtitle(artist)
-                .setMediaUri(uri)
-                .setIconUri(artwork)
-                .build();
+    setMetadata(context, bundle, ratingType);
 
-        return new QueueItem(descr, queueId);
+    queueId = System.currentTimeMillis();
+    originalItem = bundle;
+  }
+
+  @Override
+  public void setMetadata(Context context, Bundle bundle, int ratingType) {
+    super.setMetadata(context, bundle, ratingType);
+
+    if (originalItem != null && originalItem != bundle)
+      originalItem.putAll(bundle);
+  }
+
+  @Override
+  public MediaMetadataCompat.Builder toMediaMetadata() {
+    MediaMetadataCompat.Builder builder = super.toMediaMetadata();
+
+    builder.putString(METADATA_KEY_MEDIA_URI, uri.toString());
+
+    return builder;
+  }
+
+  public QueueItem toQueueItem() {
+    MediaDescriptionCompat descr = new MediaDescriptionCompat.Builder()
+      .setTitle(title)
+      .setSubtitle(artist)
+      .setMediaUri(uri)
+      .setIconUri(artwork)
+      .build();
+
+    return new QueueItem(descr, queueId);
+  }
+
+  public MediaSource toMediaSource(Context ctx, LocalPlayback playback) {
+    // Updates the user agent if not set
+    if(userAgent == null || userAgent.isEmpty())
+      userAgent = Util.getUserAgent(ctx, "react-native-track-player");
+
+    DataSource.Factory ds;
+
+    if(resourceId != 0) {
+
+      try {
+        RawResourceDataSource raw = new RawResourceDataSource(ctx);
+        raw.open(new DataSpec(uri));
+        ds = new DataSource.Factory() {
+          @Override
+          public DataSource createDataSource() {
+            return raw;
+          }
+        };
+      } catch(IOException ex) {
+        // Should never happen
+        throw new RuntimeException(ex);
+      }
+
+    } else if(Utils.isLocal(uri)) {
+
+      // Creates a local source factory
+      ds = new DefaultDataSourceFactory(ctx, userAgent);
+
+    } else {
+
+      // Creates a default http source factory, enabling cross protocol redirects
+      DefaultHttpDataSourceFactory factory = new DefaultHttpDataSourceFactory(
+        userAgent, null,
+        DefaultHttpDataSource.DEFAULT_CONNECT_TIMEOUT_MILLIS,
+        DefaultHttpDataSource.DEFAULT_READ_TIMEOUT_MILLIS,
+        true
+      );
+
+      if(headers != null) {
+        factory.getDefaultRequestProperties().set(headers);
+      }
+
+      ds = playback.enableCaching(factory);
+
     }
 
-    public MediaSource toMediaSource(Context ctx, LocalPlayback playback) {
-        // Updates the user agent if not set
-        if(userAgent == null || userAgent.isEmpty())
-            userAgent = Util.getUserAgent(ctx, "react-native-track-player");
-
-        DataSource.Factory ds;
-
-        if(resourceId != 0) {
-
-            try {
-                RawResourceDataSource raw = new RawResourceDataSource(ctx);
-                raw.open(new DataSpec(uri));
-                ds = new DataSource.Factory() {
-                    @Override
-                    public DataSource createDataSource() {
-                        return raw;
-                    }
-                };
-            } catch(IOException ex) {
-                // Should never happen
-                throw new RuntimeException(ex);
-            }
-
-        } else if(Utils.isLocal(uri)) {
-
-            // Creates a local source factory
-            ds = new DefaultDataSourceFactory(ctx, userAgent);
-
-        } else {
-
-            // Creates a default http source factory, enabling cross protocol redirects
-            DefaultHttpDataSourceFactory factory = new DefaultHttpDataSourceFactory(
-                    userAgent, null,
-                    DefaultHttpDataSource.DEFAULT_CONNECT_TIMEOUT_MILLIS,
-                    DefaultHttpDataSource.DEFAULT_READ_TIMEOUT_MILLIS,
-                    true
-            );
-
-            if(headers != null) {
-                factory.getDefaultRequestProperties().set(headers);
-            }
-
-            ds = playback.enableCaching(factory);
-
-        }
-
-        switch(type) {
-            case DASH:
-                return createDashSource(ds);
-            case HLS:
-                return createHlsSource(ds);
-            case SMOOTH_STREAMING:
-                return createSsSource(ds);
-            default:
-                return new ProgressiveMediaSource.Factory(ds, new DefaultExtractorsFactory()
-                        .setConstantBitrateSeekingEnabled(true))
-                        .createMediaSource(uri);
-        }
+    switch(type) {
+      case DASH:
+        return createDashSource(ds);
+      case HLS:
+        return createHlsSource(ds);
+      case SMOOTH_STREAMING:
+        return createSsSource(ds);
+      default:
+        return new ProgressiveMediaSource.Factory(ds, new DefaultExtractorsFactory()
+          .setConstantBitrateSeekingEnabled(true))
+          .createMediaSource(uri);
     }
+  }
 
-    private MediaSource createDashSource(DataSource.Factory factory) {
-        return new DashMediaSource.Factory(new DefaultDashChunkSource.Factory(factory), factory)
-                .createMediaSource(uri);
-    }
+  private MediaSource createDashSource(DataSource.Factory factory) {
+    return new DashMediaSource.Factory(new DefaultDashChunkSource.Factory(factory), factory)
+      .createMediaSource(uri);
+  }
 
-    private MediaSource createHlsSource(DataSource.Factory factory) {
-        return new HlsMediaSource.Factory(factory)
-                .createMediaSource(uri);
-    }
+  private MediaSource createHlsSource(DataSource.Factory factory) {
+    return new HlsMediaSource.Factory(factory)
+      .createMediaSource(uri);
+  }
 
-    private MediaSource createSsSource(DataSource.Factory factory) {
-        return new SsMediaSource.Factory(new DefaultSsChunkSource.Factory(factory), factory)
-                .createMediaSource(uri);
-    }
+  private MediaSource createSsSource(DataSource.Factory factory) {
+    return new SsMediaSource.Factory(new DefaultSsChunkSource.Factory(factory), factory)
+      .createMediaSource(uri);
+  }
 
 }
