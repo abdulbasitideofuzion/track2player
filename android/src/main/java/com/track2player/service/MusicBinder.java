@@ -2,11 +2,8 @@ package com.track2player.service;
 
 import android.os.Binder;
 import android.os.Bundle;
-
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableMap;
-import com.track2player.service.MusicManager;
-import com.track2player.service.MusicService;
 import com.track2player.service.metadata.MetadataManager;
 import com.track2player.service.models.NowPlayingMetadata;
 import com.track2player.service.models.Track;
@@ -33,7 +30,7 @@ public class MusicBinder extends Binder {
     ExoPlayback playback = manager.getPlayback();
 
     // TODO remove?
-    if (playback == null) {
+    if(playback == null) {
       playback = manager.createLocalPlayback(new Bundle());
       manager.switchPlayback(playback);
     }

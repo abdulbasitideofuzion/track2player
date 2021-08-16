@@ -14,8 +14,6 @@ public class NowPlayingMetadata extends TrackMetadata {
   @Override
   public void setMetadata(Context context, Bundle bundle, int ratingType) {
     super.setMetadata(context, bundle, ratingType);
-
     elapsedTime = bundle.getDouble("elapsedTime", 0);
   }
-
 }

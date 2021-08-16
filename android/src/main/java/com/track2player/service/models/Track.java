@@ -20,21 +20,18 @@ import com.google.android.exoplayer2.util.Util;
 import com.track2player.service.Utils;
 import com.track2player.service.player.LocalPlayback;
 
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static android.media.MediaMetadata.METADATA_KEY_MEDIA_URI;
 import static android.support.v4.media.MediaMetadataCompat.*;
-import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_URI;
 
 /**
  * @author Guichaguri
  */
-public class Track extends com.guichaguri.trackplayer.service.models.TrackMetadata {
+public class Track extends TrackMetadata {
 
   public static List<Track> createTracks(Context context, List objects, int ratingType) {
     List<Track> tracks = new ArrayList<>();

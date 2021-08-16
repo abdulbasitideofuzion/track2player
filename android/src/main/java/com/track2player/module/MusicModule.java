@@ -24,6 +24,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
+/**
+ * @author Guichaguri
+ */
 public class MusicModule extends ReactContextBaseJavaModule implements ServiceConnection {
 
   private MusicBinder binder;
