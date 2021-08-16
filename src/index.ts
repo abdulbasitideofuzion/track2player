@@ -1,6 +1,6 @@
 import { Platform, AppRegistry, DeviceEventEmitter, NativeEventEmitter, NativeModules } from 'react-native'
 // @ts-ignore
-// import * as resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource'
+import * as resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource'
 // import {
 //   MetadataOptions,
 //   PlayerOptions,
