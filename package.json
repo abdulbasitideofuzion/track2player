@@ -33,8 +33,19 @@
   },
   "keywords": [
     "react-native",
+    "track-player",
     "ios",
-    "android"
+    "android",
+    "audio-player",
+    "audio",
+    "player",
+    "music",
+    "controls",
+    "chromecast",
+    "android",
+    "ios",
+    "windows",
+    "hooks"
   ],
   "repository": "https://github.com/abdulbasitideofuzion/track2player.git",
   "author": "abdulbasit <abdul.basit@ideofuzion.com> (https://github.com/abdulbasitideofuzion)",
