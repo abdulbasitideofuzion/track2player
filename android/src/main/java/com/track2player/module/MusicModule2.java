@@ -37,17 +37,15 @@ public class MusicModule2 extends ReactContextBaseJavaModule implements ServiceC
   private ArrayDeque<Runnable> initCallbacks = new ArrayDeque<>();
   private boolean connecting = false;
   private Bundle options;
-  private int valueOption;
 
-  public MusicModule2(ReactApplicationContext reactContext, int value) {
+  public MusicModule2(ReactApplicationContext reactContext) {
     super(reactContext);
-    valueOption = value;
   }
 
   @Override
   @Nonnull
   public String getName() {
-    return "TrackPlayerModule" + valueOption;
+    return "TrackPlayerModule2" ;
   }
 
   @Override
