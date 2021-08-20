@@ -27,7 +27,7 @@ import java.util.*;
 /**
  * @author Guichaguri
  */
-public class MusicModule2 extends ReactContextBaseJavaModule implements ServiceConnection {
+public class MusicModuleTwo extends ReactContextBaseJavaModule implements ServiceConnection {
 
   private MusicBinder binder;
   private MusicEvents eventHandler;
@@ -35,14 +35,14 @@ public class MusicModule2 extends ReactContextBaseJavaModule implements ServiceC
   private boolean connecting = false;
   private Bundle options;
 
-  public MusicModule2(ReactApplicationContext reactContext) {
+  public MusicModuleTwo(ReactApplicationContext reactContext) {
     super(reactContext);
   }
 
   @Override
   @Nonnull
   public String getName() {
-    return "TrackPlayerModule2";
+    return "TrackPlayerModuleTwo";
   }
 
   @Override

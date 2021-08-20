@@ -29,7 +29,7 @@ public class MusicService extends HeadlessJsTaskService {
   @Nullable
   @Override
   protected HeadlessJsTaskConfig getTaskConfig(Intent intent) {
-    return new HeadlessJsTaskConfig("TrackPlayer2", Arguments.createMap(), 0, true);
+    return new HeadlessJsTaskConfig("TrackPlayerTwo", Arguments.createMap(), 0, true);
   }
 
   @Override
