@@ -7,6 +7,7 @@ import com.facebook.react.uimanager.ViewManager;
 
 import com.track2player.module.MusicModule2;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,9 +18,13 @@ import java.util.List;
  */
 public class TrackPlayer2 implements ReactPackage {
 
+  List<NativeModule> modules = new ArrayList<>();
+
   @Override
   public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-    return Collections.singletonList(new MusicModule2(reactContext));
+    modules.add(new MusicModule2(reactContext));
+    return modules;
+
   }
 
   @Override
