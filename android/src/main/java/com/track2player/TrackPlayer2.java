@@ -14,7 +14,6 @@ import java.util.List;
 /**
  * Track2Player
  * https://github.com/react-native-kit/react-native-track-player
- *
  * @author Guichaguri
  */
 public class TrackPlayer2 implements ReactPackage {
@@ -24,10 +23,10 @@ public class TrackPlayer2 implements ReactPackage {
   @Override
   public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
     int value = 0;
-    modules.add(new MusicModule2(reactContext));
-    if (modules.size() > 1)
+    if (modules.size() == 1)
       value = 1;
-    return Collections.singletonList(modules.get(value));
+    modules.add(new MusicModule2(reactContext, value));
+    return modules;
   }
 
   @Override
