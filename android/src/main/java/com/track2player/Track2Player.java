@@ -9,11 +9,11 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * TrackPlayer
+ * Track2Player
  * https://github.com/react-native-kit/react-native-track-player
  * @author Guichaguri
  */
-public class TrackPlayer implements ReactPackage {
+public class Track2Player implements ReactPackage {
 
   @Override
   public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {

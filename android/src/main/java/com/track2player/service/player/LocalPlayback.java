@@ -42,7 +42,7 @@ public class LocalPlayback extends ExoPlayback<SimpleExoPlayer> {
   @Override
   public void initialize() {
     if(cacheMaxSize > 0) {
-      File cacheDir = new File(context.getCacheDir(), "TrackPlayer");
+      File cacheDir = new File(context.getCacheDir(), "Track2Player");
       DatabaseProvider db = new ExoDatabaseProvider(context);
       cache = new SimpleCache(cacheDir, new LeastRecentlyUsedCacheEvictor(cacheMaxSize), db);
     } else {
