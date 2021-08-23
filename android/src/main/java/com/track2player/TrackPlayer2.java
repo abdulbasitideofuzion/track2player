@@ -20,10 +20,12 @@ import java.util.List;
 public class TrackPlayer2 implements ReactPackage {
 
 
-
+  List<NativeModule> modules = new ArrayList<>();
   @Override
   public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-    return Collections.singletonList(new MusicModule2(reactContext,"TrackPlayerModule2"));
+    modules.add(new MusicModule2(reactContext,"TrackPlayerModule1"));
+    modules.add(new MusicModule2(reactContext,"TrackPlayerModule2"));
+    return modules;
   }
 
   @Override
