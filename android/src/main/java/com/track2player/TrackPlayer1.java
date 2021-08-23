@@ -4,7 +4,6 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
-
 import com.track2player.module.MusicModule2;
 
 import java.util.ArrayList;
@@ -17,13 +16,14 @@ import java.util.List;
  *
  * @author Guichaguri
  */
-public class TrackPlayer2 implements ReactPackage {
+public class TrackPlayer1 implements ReactPackage {
 
 
   List<NativeModule> modules = new ArrayList<>();
+
   @Override
   public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-    modules.add(new MusicModule2(reactContext,"TrackPlayerModule2"));
+    modules.add(new MusicModule2(reactContext, "TrackPlayerModule1"));
     return modules;
   }
 
